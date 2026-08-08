@@ -84,9 +84,5 @@ marker の3つだけで、ズームレベルを指定する手段はない。`bb
 
 ## 未対応
 
-- **`og:image` は URL が決まるまで機能しない。** タグが `assets/og.jpg` という相対パスを
-  指しているが、`og:image` の相対パスを解決するスクレイパーはほとんどない（LINE、X、
-  Slack、WhatsApp、Facebook のいずれも絶対 URL を必要とする）。直すまでは、リンクを
-  共有してもプレビュー画像が出ない。ドメイン（あるいは `<プロジェクト名>.pages.dev`）が
-  決まりしだい `public/index.html` のその行を完全な URL に変え、LINE で共有して確認する。
-- 独自ドメイン。取得したら `<link rel="canonical">` も追加する。
+- 独自ドメイン。取得したら `og:image` と `<link rel="canonical">` の URL も
+  差し替える。どちらも絶対 URL で `coffeerhythm.pages.dev` を指しているため。
