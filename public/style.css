@@ -1,0 +1,156 @@
+/* 珈琲リズム
+   ロゴから抽出した色は --green のみ。他の3色はそれに合わせて選んだもの。 */
+
+:root {
+  --green:      #114727;
+  --green-dark: #0D3A1F;
+  --cream:      #F4EAE0;
+  --ink:        #1A1512;
+
+  --font: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", Meiryo, "Noto Sans JP", sans-serif;
+  --pad: clamp(1.5rem, 5vw, 3rem);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  line-height: 1.9;
+  color: var(--ink);
+  background: var(--cream);
+  -webkit-font-smoothing: antialiased;
+}
+
+img, iframe { display: block; max-width: 100%; }
+
+a { color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+
+.wrap {
+  width: min(64rem, 100%);
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+/* ---------- ヒーロー ---------- */
+
+.hero {
+  display: grid;
+  place-items: center;
+  min-height: min(100svh, 44rem);
+  padding: 4rem var(--pad);
+}
+
+.hero__logo { margin: 0; }
+
+.hero__logo img {
+  width: min(20rem, 62vw);
+  height: auto;
+  border-radius: 1.75rem;
+}
+
+/* ---------- セクション ---------- */
+
+main > section { padding-block: clamp(3rem, 8vw, 5.5rem); }
+
+.section-title {
+  margin: 0 0 1rem;
+  font-size: 1.5rem;
+  letter-spacing: .08em;
+}
+
+.note {
+  margin: 0 0 2rem;
+  color: rgba(26, 21, 18, .75);
+}
+
+.access__address {
+  margin: 0 0 2rem;
+  font-size: 1.0625rem;
+}
+
+.access__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+}
+
+.map {
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(17, 71, 39, .25);
+}
+
+.map iframe {
+  width: 100%;
+  height: clamp(18rem, 45vw, 26rem);
+  border: 0;
+}
+
+.map__credit {
+  margin: .85rem 0 0;
+  font-size: .75rem;
+  color: rgba(26, 21, 18, .55);
+}
+
+/* ---------- ボタン ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  padding: 1rem 1.75rem;
+  font-size: 1rem;
+  line-height: 1.3;
+  letter-spacing: .04em;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--cream);
+  background: var(--green);
+  border-radius: 999px;
+  transition: background-color .18s ease;
+}
+
+.btn:hover { background: var(--green-dark); }
+
+.btn__icon {
+  flex: none;
+  width: 1.15em;
+  height: 1.15em;
+}
+
+/* ---------- フッター ---------- */
+
+.foot {
+  padding-block: 2.5rem;
+  font-size: .875rem;
+}
+
+.foot .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1.5rem;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 2.5rem;
+  border-top: 1px solid rgba(17, 71, 39, .2);
+}
+
+.foot__name {
+  margin: 0;
+  letter-spacing: .12em;
+}
+
+.foot__link {
+  color: rgba(26, 21, 18, .7);
+  text-decoration: none;
+}
+
+.foot__link:hover { color: var(--green); }
