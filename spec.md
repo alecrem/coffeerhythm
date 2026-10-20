@@ -82,6 +82,110 @@ Google マップのボタンは例外で、Google Business Profile で確認済�
 対象が増えてしまい、上の制約と逆行する。今後 JavaScript が入るなら、この判断は
 見直すこと。
 
+## 計画中: 編集可能な営業カレンダーとメニュー
+
+現時点では未実装。実装が終わったら、該当する決定を上の「制約」「自動テストはない」
+などの節に反映し、このセクションは「変更履歴」に移すか消すこと。
+
+### 目的
+
+技術者でない人が、営業カレンダー（休みの曜日・例外的な休業/営業・時間変更のメモ）と
+メニューを、ウェブの画面から編集できるようにする。編集内容は GitHub への commit として
+残る。
+
+この機能は上の「制約」にある「ビルドも依存関係も JavaScript もなし」と矛盾する。
+対象を2点（カレンダーとメニュー）に絞ることで、複雑さを最小限にする。
+
+### アーキテクチャ
+
+```
+content/calendar.yml, content/menu.md   ← Decap CMS が編集
+        │
+        ▼ push / PR
+Cloudflare Pages（ビルドコマンド: npx @11ty/eleventy）
+        │
+        ├─ main ブランチ → 本番
+        └─ PR ブランチ    → プレビュー URL（Decap の editorial_workflow の下書き確認用）
+        │
+        ▼ 生成
+public/index.html, public/menu.html （ビルドで生成、.gitignore 対象）
+        │
+src/calendar.js ← 「今日は休みか」を計算する純粋関数。本番ページと
+                   Decap の管理画面プレビュー（admin/preview-templates/calendar.js）
+                   の両方から呼ばれる、同じモジュール。
+
+admin/ (Decap CMS) → OAuth は Cloudflare Worker（worker/ サブフォルダ、この
+                      リポジトリ専用。GitHub OAuth App の client id/secret を
+                      Worker の secret として持つ）経由。
+```
+
+### データモデル — `content/calendar.yml`
+
+```yaml
+weekly_pattern:
+  monday: closed
+  tuesday: open
+  wednesday: open
+  thursday: open
+  friday: open
+  saturday: open
+  sunday: open
+
+confirmed_until: 2026-11-15   # これより先は weekly_pattern を「未確定」として表示
+
+exceptions:
+  - date: 2026-10-20
+    status: closed            # 通常営業日の例外的休業
+    note: ""
+  - date: 2026-11-03
+    status: open              # 通常休業日の例外的営業
+    note: "祝日ですが営業します"
+  - date: 2026-10-25
+    note: "15時に閉店します"    # 状態は変えず、時間変更のメモのみ
+```
+
+ある日の表示を決める優先順位:
+1. `exceptions` にその日付があれば、`status`（あれば）と `note`（あれば）を使う。
+2. なければ `weekly_pattern` の曜日の値を使う。
+3. 日付が `confirmed_until` より後なら、上の結果はそのまま表示しつつ「未確定」として
+   視覚的に区別する（グレーなど）。
+
+表示範囲は常に「今月＋来月」の2か月のみ（`confirmed_until` がもっと先でも、それ以上は
+表示しない）。
+
+`content/menu.md` はプレーンな Markdown（構造化フィールドなし、自由記述のリスト）。
+
+### Decap CMS
+
+- バックエンド: `github`、`publish_mode: editorial_workflow`
+  （保存＝ブランチ＋PR作成、「公開」＝main へのマージ。レビュー担当者は置かず、
+  編集者自身が Cloudflare Pages のプレビュー URL で確認してから公開する）
+- コレクション `calendar`: `content/calendar.yml` を編集するフォームで、上の
+  `weekly_pattern` / `confirmed_until` / `exceptions` に対応するフィールドを持つ
+- コレクション `menu`: `content/menu.md` を編集する markdown フィールドのみ
+- `admin/preview-templates/calendar.js` が `src/calendar.js` と同じロジックを使い、
+  フォームの入力値からリアルタイムに「今月＋来月」のプレビューを描画する
+
+### フォルダ構成の変更
+
+```
+content/            calendar.yml, menu.md（Decap が編集する対象）
+src/                Eleventy の入力（テンプレート、calendar.js、CSS、画像）
+admin/              Decap CMS（config.yml, index.html, preview-templates/）
+worker/             OAuth プロキシ（Cloudflare Worker、この repo 専用、独立デプロイ）
+public/             Eleventy の出力。生成物のため .gitignore に追加
+```
+
+現在の `public/` の内容（テンプレート・CSS・画像）は `src/` に移す。
+
+### テストの方針（「自動テストはない」の見直し）
+
+既存の「自動テストはない」節に書いた通り、「今後 JavaScript が入るなら、この判断は
+見直すこと」になっていたので見直す。`src/calendar.js` は純粋関数にする（「今日」の
+日付は常に引数として渡し、関数内で `Date.now()` を読まない）ため、`node --test`
+（新規依存なし）で決定的にテストできる: weekly_pattern の解決、exceptions の3パターン
+（休業/営業/メモのみ）、`confirmed_until` による未確定表示の境界、を確認する。
+
 ## 変更履歴
 
 決定を覆したり差し替えたりしたときに、その経緯を書く。現在の状態そのものは上の各節が
