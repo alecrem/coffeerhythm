@@ -2,7 +2,7 @@ backend:
   name: github
   repo: alecrem/coffeerhythm
   branch: main
-  base_url: https://coffeerhythm-oauth.YOUR_SUBDOMAIN.workers.dev
+  base_url: https://coffeerhythm-oauth.karawapo.workers.dev
   auth_endpoint: auth
 
 publish_mode: editorial_workflow
