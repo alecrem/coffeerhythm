@@ -3,6 +3,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ 'src/style.css': 'style.css' });
   eleventyConfig.addPassthroughCopy({ 'src/calendar.js': 'calendar.js' });
   eleventyConfig.addPassthroughCopy({ 'src/calendar-render.js': 'calendar-render.js' });
+  eleventyConfig.addPassthroughCopy({ admin: 'admin' });
 
   return {
     dir: {

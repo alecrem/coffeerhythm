@@ -1,0 +1,55 @@
+backend:
+  name: github
+  repo: alecrem/coffeerhythm
+  branch: main
+  base_url: https://coffeerhythm-oauth.YOUR_SUBDOMAIN.workers.dev
+  auth_endpoint: auth
+
+publish_mode: editorial_workflow
+
+media_folder: content/images
+public_folder: /assets
+
+collections:
+  - name: calendar
+    label: 営業カレンダー
+    files:
+      - name: calendar
+        label: 営業カレンダー
+        file: content/calendar.yml
+        fields:
+          - label: 休みの曜日（デフォルト）
+            name: weekly_pattern
+            widget: object
+            fields:
+              - { label: 月曜日, name: monday, widget: select, options: [open, closed] }
+              - { label: 火曜日, name: tuesday, widget: select, options: [open, closed] }
+              - { label: 水曜日, name: wednesday, widget: select, options: [open, closed] }
+              - { label: 木曜日, name: thursday, widget: select, options: [open, closed] }
+              - { label: 金曜日, name: friday, widget: select, options: [open, closed] }
+              - { label: 土曜日, name: saturday, widget: select, options: [open, closed] }
+              - { label: 日曜日, name: sunday, widget: select, options: [open, closed] }
+          - label: この日付まで確定
+            name: confirmed_until
+            widget: date
+            required: false
+            format: 'YYYY-MM-DD'
+            date_format: 'YYYY-MM-DD'
+            time_format: false
+          - label: 例外（休み・特別営業・時間変更）
+            name: exceptions
+            widget: list
+            required: false
+            fields:
+              - { label: 日付, name: date, widget: date, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false }
+              - { label: 状態（空欄なら通常どおり）, name: status, widget: select, options: [open, closed], required: false }
+              - { label: メモ（例：15時に閉店します）, name: note, widget: string, required: false }
+
+  - name: menu
+    label: メニュー
+    files:
+      - name: menu
+        label: メニュー
+        file: content/menu.md
+        fields:
+          - { label: 本文, name: body, widget: markdown }
