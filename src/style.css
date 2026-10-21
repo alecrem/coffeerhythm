@@ -215,7 +215,7 @@ main > section { padding-block: clamp(3rem, 8vw, 5.5rem); }
 
 .calendar__day--closed {
   background: transparent;
-  color: rgba(26, 21, 18, .4);
+  color: rgba(26, 21, 18, .6);
 }
 
 .calendar__day--empty {
@@ -223,14 +223,15 @@ main > section { padding-block: clamp(3rem, 8vw, 5.5rem); }
   min-height: 0;
 }
 
-.calendar__day--provisional { opacity: .55; }
+.calendar__day--provisional { opacity: .75; }
 
 .calendar__day-status {
   font-size: .6875rem;
+  font-weight: 700;
   color: var(--green);
 }
 
-.calendar__day--closed .calendar__day-status { color: inherit; }
+.calendar__day--closed .calendar__day-status { color: var(--ink); }
 
 /* 営業日は数字だけで足りるので、ラベルは読み上げ用に残して見た目からは外す。 */
 .calendar__day-status--open {
@@ -247,7 +248,7 @@ main > section { padding-block: clamp(3rem, 8vw, 5.5rem); }
 .calendar__day-note {
   font-size: .625rem;
   line-height: 1.25;
-  color: rgba(26, 21, 18, .75);
+  color: var(--ink);
   overflow-wrap: anywhere;
 }
 
