@@ -3,7 +3,7 @@ const GITHUB_TOKEN_URL = 'https://github.com/login/oauth/access_token';
 
 function readCookie(request, name) {
   const header = request.headers.get('Cookie') || '';
-  const match = header.match(new RegExp(name + '=([^;]+)'));
+  const match = header.match(new RegExp('(?:^|;\\s*)' + name + '=([^;]+)'));
   return match ? match[1] : null;
 }
 
@@ -15,7 +15,7 @@ async function handleAuth(request, env) {
   const authorizeUrl = new URL(GITHUB_AUTHORIZE_URL);
   authorizeUrl.searchParams.set('client_id', env.GITHUB_OAUTH_CLIENT_ID);
   authorizeUrl.searchParams.set('redirect_uri', redirectUri);
-  authorizeUrl.searchParams.set('scope', 'repo,user');
+  authorizeUrl.searchParams.set('scope', 'public_repo,user');
   authorizeUrl.searchParams.set('state', state);
 
   return new Response(null, {
@@ -27,10 +27,14 @@ async function handleAuth(request, env) {
   });
 }
 
+// トークンを渡す相手はこのサイトだけに限定する。
+const ALLOWED_ORIGIN = 'https://coffeerhythm.pages.dev';
+
 function renderCallbackPage(payload) {
   return '<!doctype html><html><body><script>' +
     '(function () {' +
     'function receiveMessage(e) {' +
+    'if (e.origin !== ' + JSON.stringify(ALLOWED_ORIGIN) + ') { return; }' +
     'window.opener.postMessage(' + JSON.stringify(payload) + ', e.origin);' +
     'window.removeEventListener("message", receiveMessage, false);' +
     '}' +
