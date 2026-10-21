@@ -21,6 +21,7 @@ collections:
           - label: 休みの曜日（デフォルト）
             name: weekly_pattern
             widget: object
+            collapsed: true
             fields:
               - { label: 月曜日, name: monday, widget: select, options: [open, closed] }
               - { label: 火曜日, name: tuesday, widget: select, options: [open, closed] }
