@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>{{ title }}</title>
+<meta name="description" content="{{ description }}">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ title }}">
+<meta property="og:description" content="{{ ogDescription or description }}">
+<meta property="og:image" content="https://coffeerhythm.pages.dev/assets/og.jpg">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="canonical" href="https://coffeerhythm.pages.dev{{ page.url }}">
+<link rel="icon" href="/assets/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header class="hero">
+  <h1 class="hero__logo">
+    <a href="/"><img src="/assets/logo.png" width="600" height="600" alt="珈琲リズム Coffee Rhythm"></a>
+  </h1>
+</header>
+
+<main>
+{{ content | safe }}
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot__name">珈琲リズム</p>
+    <a class="foot__link" href="https://www.instagram.com/coffeerhythm_itoshima" target="_blank" rel="noopener">@coffeerhythm_itoshima</a>
+  </div>
+</footer>
+
+</body>
+</html>

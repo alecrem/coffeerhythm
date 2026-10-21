@@ -1,0 +1,83 @@
+---
+layout: base.njk
+title: 珈琲リズム｜福岡県糸島市のコーヒー店
+description: 福岡県糸島市神在西のコーヒー店「珈琲リズム」。営業カレンダーとメニュー、アクセスをご案内しています。
+ogDescription: 福岡県糸島市神在西にあるコーヒー店「珈琲リズム」。今月と来月の営業日はこのページの営業カレンダーで、お飲み物はメニューのページでご確認いただけます。
+---
+<section class="calendar">
+  <div class="wrap">
+    <h2 class="section-title">営業カレンダー</h2>
+    <div id="calendar-root" class="calendar__root">
+      <p class="note">カレンダーを読み込み中です…</p>
+    </div>
+    <p class="calendar__legend">グレーの日付は未確定です。最新情報は<a href="https://www.instagram.com/coffeerhythm_itoshima" target="_blank" rel="noopener">Instagram</a>でもご確認いただけます。</p>
+  </div>
+</section>
+
+<section class="access">
+  <div class="wrap">
+    <h2 class="section-title">アクセス</h2>
+    <p class="access__address">
+      〒819-1148<br>
+      福岡県糸島市神在西2丁目23-6 1F
+    </p>
+    <div class="access__links">
+      <a class="btn" href="https://maps.app.goo.gl/J6tgGn87mfY3inyw6" target="_blank" rel="noopener">
+        <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 22s7-7.1 7-12a7 7 0 1 0-14 0c0 4.9 7 12 7 12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <circle cx="12" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        Googleマップで開く
+      </a>
+      <a class="btn" href="https://maps.apple.com/?q=%E7%A6%8F%E5%B2%A1%E7%9C%8C%E7%B3%B8%E5%B3%B6%E5%B8%82%E7%A5%9E%E5%9C%A8%E8%A5%BF2%E4%B8%81%E7%9B%AE23-6" target="_blank" rel="noopener">
+        <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 22s7-7.1 7-12a7 7 0 1 0-14 0c0 4.9 7 12 7 12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <circle cx="12" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        Appleマップで開く
+      </a>
+    </div>
+
+    <!-- 店舗の座標: 33.5465637, 130.1730767（コード中でここにしか書かれていない）
+         bbox は上の座標から算出した表示範囲なので、座標を直すときは bbox も更新すること。 -->
+    <div class="map">
+      <iframe
+        src="https://www.openstreetmap.org/export/embed.html?bbox=130.1690767%2C33.5443637%2C130.1770767%2C33.5487637&amp;layer=mapnik&amp;marker=33.5465637%2C130.1730767"
+        title="珈琲リズム周辺の地図" loading="lazy"></iframe>
+    </div>
+    <p class="map__credit">地図データ &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors</p>
+  </div>
+</section>
+
+<section class="menu-link">
+  <div class="wrap">
+    <p class="note">メニューはこちらでご案内しています。</p>
+    <a class="btn" href="/menu/">メニューを見る</a>
+  </div>
+</section>
+
+<section class="instagram">
+  <div class="wrap">
+    <p class="note">最新のお知らせはInstagramでもご覧いただけます。</p>
+    <a class="btn" href="https://www.instagram.com/coffeerhythm_itoshima" target="_blank" rel="noopener">
+      <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="12" cy="12" r="4.75" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="17.7" cy="6.3" r="1.4" fill="currentColor"/>
+      </svg>
+      Instagramを見る
+    </a>
+  </div>
+</section>
+
+<script src="/calendar.js"></script>
+<script src="/calendar-render.js"></script>
+<script>
+(function () {
+  var data = {{ calendar | dump | safe }};
+  var today = window.CoffeeRhythmCalendar.getTodayInJST();
+  var months = window.CoffeeRhythmCalendar.getMonthsToShow(data, today);
+  document.getElementById('calendar-root').innerHTML =
+    window.CoffeeRhythmCalendarRender.renderCalendarHTML(months, data.hours_note);
+})();
+</script>

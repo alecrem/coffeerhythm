@@ -1,2 +1,4 @@
 .DS_Store
 originals/
+node_modules/
+public/
