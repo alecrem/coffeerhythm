@@ -1,0 +1,12 @@
+weekly_pattern:
+  monday: closed
+  tuesday: open
+  wednesday: open
+  thursday: closed
+  friday: open
+  saturday: open
+  sunday: open
+
+confirmed_until:
+
+exceptions: []

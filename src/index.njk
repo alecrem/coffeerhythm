@@ -3,6 +3,16 @@ layout: base.njk
 title: 珈琲リズム｜福岡県糸島市のコーヒー店
 description: 福岡県糸島市神在西のコーヒー店「珈琲リズム」。
 ---
+<section class="calendar">
+  <div class="wrap">
+    <h2 class="section-title">営業カレンダー</h2>
+    <div id="calendar-root" class="calendar__root">
+      <p class="note">カレンダーを読み込み中です…</p>
+    </div>
+    <p class="calendar__legend">グレーの日付は未確定です。最新情報は<a href="https://www.instagram.com/coffeerhythm_itoshima" target="_blank" rel="noopener">Instagram</a>でもご確認いただけます。</p>
+  </div>
+</section>
+
 <section class="access">
   <div class="wrap">
     <h2 class="section-title">アクセス</h2>
@@ -51,3 +61,15 @@ description: 福岡県糸島市神在西のコーヒー店「珈琲リズム」�
     </a>
   </div>
 </section>
+
+<script src="/calendar.js"></script>
+<script src="/calendar-render.js"></script>
+<script>
+(function () {
+  var data = {{ calendar | dump | safe }};
+  var today = window.CoffeeRhythmCalendar.getTodayInJST();
+  var months = window.CoffeeRhythmCalendar.getMonthsToShow(data, today);
+  document.getElementById('calendar-root').innerHTML =
+    window.CoffeeRhythmCalendarRender.renderCalendarHTML(months);
+})();
+</script>

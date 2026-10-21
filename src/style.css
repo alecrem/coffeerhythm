@@ -154,3 +154,52 @@ main > section { padding-block: clamp(3rem, 8vw, 5.5rem); }
 }
 
 .foot__link:hover { color: var(--green); }
+
+/* ---------- 営業カレンダー ---------- */
+
+.calendar__root { margin-bottom: 1rem; }
+
+.calendar__months {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.calendar__month-title {
+  margin: 0 0 .75rem;
+  font-size: 1rem;
+  letter-spacing: .06em;
+}
+
+.calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: .35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.calendar__day {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: .5rem;
+  font-size: .875rem;
+  background: rgba(17, 71, 39, .08);
+}
+
+.calendar__day--open { background: rgba(17, 71, 39, .12); }
+
+.calendar__day--closed {
+  background: transparent;
+  color: rgba(26, 21, 18, .4);
+}
+
+.calendar__day--provisional { opacity: .55; }
+
+.calendar__legend {
+  margin: 1rem 0 0;
+  font-size: .8125rem;
+  color: rgba(26, 21, 18, .6);
+}
