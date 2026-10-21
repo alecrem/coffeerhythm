@@ -2,8 +2,8 @@
   'use strict';
 
   var MONTH_LABELS = ['', '1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
-  var WEEKDAY_LABELS = ['日', '月', '火', '水', '木', '金', '土'];
-  var WEEKDAY_KEYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  var WEEKDAY_LABELS = ['月', '火', '水', '木', '金', '土', '日'];
+  var WEEKDAY_KEYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
   var STATUSES = ['open', 'closed'];
   var STATUS_LABELS = { open: '営業', closed: '休' };
 

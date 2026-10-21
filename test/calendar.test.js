@@ -196,28 +196,30 @@ test('renderCalendarHTML: 各日の日付とステータスのクラスを含む
   assert.ok(html.includes('calendar__day--provisional'));
 });
 
-test('renderCalendarHTML: 曜日の見出しを含む', () => {
+test('renderCalendarHTML: 曜日の見出しは月曜始まりの順で並ぶ', () => {
   const months = getMonthsToShow(baseCalendar, '2026-10-01');
   const html = renderCalendarHTML(months);
   assert.ok(html.includes('calendar__weekday-row'));
-  ['日', '月', '火', '水', '木', '金', '土'].forEach((label) => {
-    assert.ok(html.includes('<span class="calendar__weekday">' + label + '</span>'));
-  });
+  const rowMatch = html.match(/<div class="calendar__weekday-row"[^>]*>([\s\S]*?)<\/div>/);
+  assert.ok(rowMatch);
+  const labels = rowMatch[1].match(/<span class="calendar__weekday">(.)<\/span>/g).map((s) => s.replace(/<[^>]+>/g, ''));
+  assert.deepEqual(labels, ['月', '火', '水', '木', '金', '土', '日']);
 });
 
-test('renderCalendarHTML: 1日の曜日の分だけ空のマスを先頭に置く', () => {
-  // 2026-10-01 は木曜日（日曜始まりで4番目）
+test('renderCalendarHTML: 1日の曜日の分だけ空のマスを先頭に置く（木曜始まり）', () => {
+  // 2026-10-01 は木曜日（月曜始まりで4番目、インデックス3）
   const months = getMonthsToShow(baseCalendar, '2026-10-01');
   const monthHtml = renderCalendarHTML(months).split('calendar__month-title')[1];
   const emptyCells = monthHtml.split('calendar__day--empty').length - 1;
-  assert.equal(emptyCells, 4);
+  assert.equal(emptyCells, 3);
   assert.ok(monthHtml.indexOf('calendar__day--empty') < monthHtml.indexOf('data-date="2026-10-01"'));
 });
 
-test('renderCalendarHTML: 月初が日曜日なら空のマスを置かない', () => {
+test('renderCalendarHTML: 月初が日曜日なら空のマスを6個置く（月曜始まりで最後の列）', () => {
   const months = getMonthsToShow(baseCalendar, '2026-11-01'); // 2026-11-01 は日曜日
   const html = renderCalendarHTML(months).split('calendar__month-title')[1];
-  assert.ok(!html.includes('calendar__day--empty'));
+  const emptyCells = html.split('calendar__day--empty').length - 1;
+  assert.equal(emptyCells, 6);
 });
 
 test('renderDay: メモはtitle属性だけでなく本文としても表示する', () => {
