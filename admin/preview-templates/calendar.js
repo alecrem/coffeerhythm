@@ -1,7 +1,8 @@
 var CalendarPreview = createClass({
   render: function () {
     var entry = this.props.entry;
-    var data = entry.getIn(['data']).toJS();
+    var raw = entry.getIn(['data']).toJS();
+    var data = window.CoffeeRhythmCalendar.normalizeCalendarData(raw);
     var today = window.CoffeeRhythmCalendar.getTodayInJST();
     var months = window.CoffeeRhythmCalendar.getMonthsToShow(data, today);
     var html = window.CoffeeRhythmCalendarRender.renderCalendarHTML(months);

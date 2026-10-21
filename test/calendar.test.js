@@ -1,7 +1,13 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { resolveDay, getMonthsToShow, getTodayInJST } = require('../src/calendar.js');
-const { renderCalendarHTML } = require('../src/calendar-render.js');
+const {
+  resolveDay,
+  getMonthsToShow,
+  getTodayInJST,
+  normalizeDate,
+  normalizeCalendarData
+} = require('../src/calendar.js');
+const { renderCalendarHTML, renderDay } = require('../src/calendar-render.js');
 
 const baseCalendar = {
   weekly_pattern: {
@@ -124,6 +130,61 @@ test('getTodayInJST: JSTの日付境界をまたぐ瞬間を正しく判定す�
   assert.equal(getTodayInJST(afterMidnightJST), '2026-10-20');
 });
 
+test('normalizeDate: DateをYYYY-MM-DDの文字列にする', () => {
+  assert.equal(normalizeDate(new Date('2026-12-30T00:00:00.000Z')), '2026-12-30');
+  assert.equal(normalizeDate('2026-12-30'), '2026-12-30');
+});
+
+test('normalizeDate: 月日が1桁でも0で埋める', () => {
+  assert.equal(normalizeDate(new Date('2026-01-05T00:00:00.000Z')), '2026-01-05');
+});
+
+test('normalizeCalendarData: js-yamlがDateで読んだ日付でも文字列の場合と同じ結果になる', () => {
+  // js-yaml は引用符なしの `2026-12-30` を Date として読む。
+  const fromYaml = {
+    ...baseCalendar,
+    confirmed_until: new Date('2026-12-31T00:00:00.000Z'),
+    exceptions: [{ date: new Date('2026-12-30T00:00:00.000Z'), status: 'closed', note: '年末休業' }]
+  };
+  const asStrings = {
+    ...baseCalendar,
+    confirmed_until: '2026-12-31',
+    exceptions: [{ date: '2026-12-30', status: 'closed', note: '年末休業' }]
+  };
+
+  const normalized = resolveDay(normalizeCalendarData(fromYaml), '2026-12-30');
+  assert.deepEqual(normalized, resolveDay(normalizeCalendarData(asStrings), '2026-12-30'));
+  assert.equal(normalized.status, 'closed');
+  assert.equal(normalized.provisional, false);
+});
+
+test('normalizeCalendarData: 正規化しないとDateの例外は取りこぼされる（バグの再現）', () => {
+  const fromYaml = {
+    ...baseCalendar,
+    exceptions: [{ date: new Date('2026-12-30T00:00:00.000Z'), status: 'closed', note: '年末休業' }]
+  };
+  assert.equal(resolveDay(fromYaml, '2026-12-30').status, 'open');
+});
+
+test('normalizeCalendarData: 元のオブジェクトを書き換えない', () => {
+  const exception = { date: new Date('2026-12-30T00:00:00.000Z'), status: 'closed' };
+  const data = { ...baseCalendar, exceptions: [exception] };
+  normalizeCalendarData(data);
+  assert.ok(exception.date instanceof Date);
+});
+
+test('normalizeCalendarData: confirmed_untilが未設定なら未設定のまま', () => {
+  const normalized = normalizeCalendarData({ ...baseCalendar, confirmed_until: undefined });
+  assert.equal(normalized.confirmed_until, undefined);
+  assert.deepEqual(normalized.exceptions, []);
+});
+
+test('normalizeCalendarData: 空のデータでも壊れない', () => {
+  const normalized = normalizeCalendarData(undefined);
+  assert.deepEqual(normalized.exceptions, []);
+  assert.equal(resolveDay(normalized, '2026-10-01').status, 'closed');
+});
+
 test('renderCalendarHTML: 各日の日付とステータスのクラスを含む', () => {
   const months = getMonthsToShow(
     { ...baseCalendar, confirmed_until: '2026-10-01', exceptions: [] },
@@ -133,4 +194,66 @@ test('renderCalendarHTML: 各日の日付とステータスのクラスを含む
   assert.ok(html.includes('data-date="2026-10-01"'));
   assert.ok(html.includes('calendar__day--closed'));
   assert.ok(html.includes('calendar__day--provisional'));
+});
+
+test('renderCalendarHTML: 曜日の見出しを含む', () => {
+  const months = getMonthsToShow(baseCalendar, '2026-10-01');
+  const html = renderCalendarHTML(months);
+  assert.ok(html.includes('calendar__weekday-row'));
+  ['日', '月', '火', '水', '木', '金', '土'].forEach((label) => {
+    assert.ok(html.includes('<span class="calendar__weekday">' + label + '</span>'));
+  });
+});
+
+test('renderCalendarHTML: 1日の曜日の分だけ空のマスを先頭に置く', () => {
+  // 2026-10-01 は木曜日（日曜始まりで4番目）
+  const months = getMonthsToShow(baseCalendar, '2026-10-01');
+  const monthHtml = renderCalendarHTML(months).split('calendar__month-title')[1];
+  const emptyCells = monthHtml.split('calendar__day--empty').length - 1;
+  assert.equal(emptyCells, 4);
+  assert.ok(monthHtml.indexOf('calendar__day--empty') < monthHtml.indexOf('data-date="2026-10-01"'));
+});
+
+test('renderCalendarHTML: 月初が日曜日なら空のマスを置かない', () => {
+  const months = getMonthsToShow(baseCalendar, '2026-11-01'); // 2026-11-01 は日曜日
+  const html = renderCalendarHTML(months).split('calendar__month-title')[1];
+  assert.ok(!html.includes('calendar__day--empty'));
+});
+
+test('renderDay: メモはtitle属性だけでなく本文としても表示する', () => {
+  const html = renderDay(resolveDay(
+    { ...baseCalendar, exceptions: [{ date: '2026-10-01', note: '15時に閉店します' }] },
+    '2026-10-01'
+  ));
+  assert.ok(html.includes('title="15時に閉店します"'));
+  assert.ok(html.includes('<span class="calendar__day-note">15時に閉店します</span>'));
+});
+
+test('renderDay: メモのHTMLをエスケープする', () => {
+  const html = renderDay({
+    date: '2026-10-01',
+    weekday: 'thursday',
+    status: 'open',
+    note: '<script>alert("x")</script>',
+    provisional: false
+  });
+  assert.ok(!html.includes('<script>'));
+  assert.ok(html.includes('&lt;script&gt;'));
+});
+
+test('renderDay: 休業日には「休」を表示する', () => {
+  const html = renderDay(resolveDay(baseCalendar, '2026-10-05')); // 月曜日は休み
+  assert.ok(html.includes('>休</span>'));
+});
+
+test('renderDay: 想定外のstatusはclass属性にそのまま入らない', () => {
+  const html = renderDay({
+    date: '2026-10-01',
+    weekday: 'thursday',
+    status: 'open" onmouseover="x',
+    note: '',
+    provisional: false
+  });
+  assert.ok(!html.includes('onmouseover'));
+  assert.ok(html.includes('calendar__day--closed'));
 });

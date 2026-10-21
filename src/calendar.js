@@ -21,6 +21,27 @@
     return year + '-' + pad2(month) + '-' + pad2(day);
   }
 
+  // YAML の `2026-12-30` は js-yaml が Date として読む。文字列比較の前に揃える。
+  function normalizeDate(value) {
+    if (value instanceof Date) {
+      return value.getUTCFullYear() + '-' +
+        pad2(value.getUTCMonth() + 1) + '-' +
+        pad2(value.getUTCDate());
+    }
+    return String(value);
+  }
+
+  function normalizeCalendarData(raw) {
+    var data = raw || {};
+    var exceptions = (data.exceptions || []).map(function (exception) {
+      return Object.assign({}, exception, { date: normalizeDate(exception.date) });
+    });
+    var confirmedUntil = data.confirmed_until
+      ? normalizeDate(data.confirmed_until)
+      : data.confirmed_until;
+    return Object.assign({}, data, { exceptions: exceptions, confirmed_until: confirmedUntil });
+  }
+
   function findException(exceptions, dateISO) {
     var found;
     (exceptions || []).forEach(function (exception) {
@@ -91,6 +112,8 @@
   }
 
   var CoffeeRhythmCalendar = {
+    normalizeDate: normalizeDate,
+    normalizeCalendarData: normalizeCalendarData,
     resolveDay: resolveDay,
     getMonthsToShow: getMonthsToShow,
     getTodayInJST: getTodayInJST
