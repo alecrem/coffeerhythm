@@ -38,9 +38,10 @@
     var note = day.note
       ? '<span class="calendar__day-note">' + escapeHtml(day.note) + '</span>'
       : '';
+    var dayNumberClass = 'calendar__day-number' + (day.weekday === 'sunday' ? ' calendar__day-number--sunday' : '');
 
     return '<li class="' + classes.join(' ') + '" data-date="' + escapeHtml(day.date) + '"' + title + '>' +
-      '<span class="calendar__day-number">' + dayNumber + '</span>' +
+      '<span class="' + dayNumberClass + '">' + dayNumber + '</span>' +
       '<span class="calendar__day-status calendar__day-status--' + status + '">' + statusLabel + '</span>' +
       note +
       '</li>';
@@ -53,7 +54,8 @@
   function renderWeekdayRow() {
     return '<div class="calendar__weekday-row" aria-hidden="true">' +
       WEEKDAY_LABELS.map(function (label) {
-        return '<span class="calendar__weekday">' + label + '</span>';
+        var classes = 'calendar__weekday' + (label === '日' ? ' calendar__weekday--sunday' : '');
+        return '<span class="' + classes + '">' + label + '</span>';
       }).join('') +
       '</div>';
   }

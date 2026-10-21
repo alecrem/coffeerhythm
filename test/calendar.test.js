@@ -202,8 +202,16 @@ test('renderCalendarHTML: 曜日の見出しは月曜始まりの順で並ぶ', 
   assert.ok(html.includes('calendar__weekday-row'));
   const rowMatch = html.match(/<div class="calendar__weekday-row"[^>]*>([\s\S]*?)<\/div>/);
   assert.ok(rowMatch);
-  const labels = rowMatch[1].match(/<span class="calendar__weekday">(.)<\/span>/g).map((s) => s.replace(/<[^>]+>/g, ''));
+  const labels = rowMatch[1].match(/<span class="calendar__weekday[^"]*">(.)<\/span>/g).map((s) => s.replace(/<[^>]+>/g, ''));
   assert.deepEqual(labels, ['月', '火', '水', '木', '金', '土', '日']);
+});
+
+test('renderCalendarHTML: 日曜の見出しと日付には専用のクラスがつく（休の文字色は変えない）', () => {
+  const months = getMonthsToShow(baseCalendar, '2026-11-01'); // 2026-11-01 は日曜日
+  const html = renderCalendarHTML(months);
+  assert.ok(html.includes('<span class="calendar__weekday calendar__weekday--sunday">日</span>'));
+  assert.ok(html.includes('<span class="calendar__day-number calendar__day-number--sunday">1</span>'));
+  assert.ok(!html.includes('calendar__day-status--sunday'));
 });
 
 test('renderCalendarHTML: 1日の曜日の分だけ空のマスを先頭に置く（木曜始まり）', () => {

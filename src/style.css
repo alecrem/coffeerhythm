@@ -6,6 +6,7 @@
   --green-dark: #0D3A1F;
   --cream:      #F4EAE0;
   --ink:        #1A1512;
+  --sunday-red: #A0522D;
 
   --font: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", Meiryo, "Noto Sans JP", sans-serif;
   --pad: clamp(1.5rem, 5vw, 3rem);
@@ -187,6 +188,12 @@ main > section { padding-block: clamp(3rem, 8vw, 5.5rem); }
   font-size: .75rem;
   line-height: 1.6;
   color: rgba(26, 21, 18, .6);
+}
+
+.calendar__weekday--sunday,
+.calendar__day-number--sunday {
+  color: var(--sunday-red);
+  font-weight: 700;
 }
 
 .calendar__grid {
