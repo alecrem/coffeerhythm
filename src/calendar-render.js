@@ -47,6 +47,23 @@
       '</li>';
   }
 
+  // 最小限のMarkdownもどき: 空行区切りの段落と、段落内の改行だけを扱う。
+  // 太字・リスト・リンクなどは扱わない（本番ページとプレビューで同じ
+  // レンダリングを保証するため、ブラウザにMarkdownパーサーを持ち込まない）。
+  function renderParagraphs(text) {
+    if (!text) {
+      return '';
+    }
+    return String(text)
+      .split(/\n\s*\n/)
+      .map(function (paragraph) { return paragraph.trim(); })
+      .filter(function (paragraph) { return paragraph.length > 0; })
+      .map(function (paragraph) {
+        return '<p>' + escapeHtml(paragraph).replace(/\n/g, '<br>') + '</p>';
+      })
+      .join('');
+  }
+
   function renderEmptyDay() {
     return '<li class="calendar__day calendar__day--empty" aria-hidden="true"></li>';
   }
@@ -60,7 +77,7 @@
       '</div>';
   }
 
-  function renderMonth(month) {
+  function renderMonth(month, extraHtml) {
     var days = month.days || [];
     var offset = days.length ? weekdayIndex(days[0].weekday) : 0;
     var leading = '';
@@ -75,16 +92,26 @@
       leading +
       days.map(renderDay).join('') +
       '</ul>' +
+      (extraHtml || '') +
       '</div>';
   }
 
-  function renderCalendarHTML(months) {
-    return '<div class="calendar__months">' + months.map(renderMonth).join('') + '</div>';
+  function renderCalendarHTML(months, hoursNote) {
+    var hoursNoteHtml = hoursNote
+      ? '<div class="calendar__hours-note">' + renderParagraphs(hoursNote) + '</div>'
+      : '';
+
+    return '<div class="calendar__months">' +
+      months.map(function (month, index) {
+        return renderMonth(month, index === 0 ? hoursNoteHtml : '');
+      }).join('') +
+      '</div>';
   }
 
   var CoffeeRhythmCalendarRender = {
     renderCalendarHTML: renderCalendarHTML,
-    renderDay: renderDay
+    renderDay: renderDay,
+    renderParagraphs: renderParagraphs
   };
 
   if (typeof module !== 'undefined' && module.exports) {

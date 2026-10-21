@@ -45,6 +45,10 @@ collections:
               - { label: 日付, name: date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false }
               - { label: 状態（空欄なら通常どおり）, name: status, widget: select, options: [open, closed], required: false }
               - { label: メモ（例：15時に閉店します）, name: note, widget: string, required: false }
+          - label: 営業時間（今月のカレンダーの下に表示）
+            name: hours_note
+            widget: text
+            required: false
 
   - name: menu
     label: メニュー

@@ -7,7 +7,7 @@ const {
   normalizeDate,
   normalizeCalendarData
 } = require('../src/calendar.js');
-const { renderCalendarHTML, renderDay } = require('../src/calendar-render.js');
+const { renderCalendarHTML, renderDay, renderParagraphs } = require('../src/calendar-render.js');
 
 const baseCalendar = {
   weekly_pattern: {
@@ -266,4 +266,35 @@ test('renderDay: 想定外のstatusはclass属性にそのまま入らない', (
   });
   assert.ok(!html.includes('onmouseover'));
   assert.ok(html.includes('calendar__day--closed'));
+});
+
+test('renderParagraphs: 空行区切りで段落を分け、段落内の改行はbrにする', () => {
+  const html = renderParagraphs('1行目\n2行目\n\n3行目');
+  assert.equal(html, '<p>1行目<br>2行目</p><p>3行目</p>');
+});
+
+test('renderParagraphs: HTMLをエスケープする（太字記法などはそのまま文字として出す）', () => {
+  const html = renderParagraphs('**太字のつもり** <script>alert(1)</script>');
+  assert.ok(!html.includes('<script>'));
+  assert.ok(html.includes('**太字のつもり**'));
+});
+
+test('renderParagraphs: 空文字・未設定は空文字を返す', () => {
+  assert.equal(renderParagraphs(''), '');
+  assert.equal(renderParagraphs(undefined), '');
+});
+
+test('renderCalendarHTML: hours_noteは今月のカレンダーの下にだけ表示する', () => {
+  const months = getMonthsToShow(baseCalendar, '2026-10-01');
+  const html = renderCalendarHTML(months, '営業時間 10:00〜17:00 (L.O. 16:30)');
+  const monthBlocks = html.split('calendar__month-title');
+  assert.ok(monthBlocks[1].includes('calendar__hours-note'));
+  assert.ok(monthBlocks[1].includes('営業時間 10:00〜17:00 (L.O. 16:30)'));
+  assert.ok(!monthBlocks[2].includes('calendar__hours-note'));
+});
+
+test('renderCalendarHTML: hours_noteが無ければ何も追加しない', () => {
+  const months = getMonthsToShow(baseCalendar, '2026-10-01');
+  const html = renderCalendarHTML(months);
+  assert.ok(!html.includes('calendar__hours-note'));
 });

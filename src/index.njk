@@ -78,6 +78,6 @@ ogDescription: 福岡県糸島市神在西にあるコーヒー店「珈琲リ�
   var today = window.CoffeeRhythmCalendar.getTodayInJST();
   var months = window.CoffeeRhythmCalendar.getMonthsToShow(data, today);
   document.getElementById('calendar-root').innerHTML =
-    window.CoffeeRhythmCalendarRender.renderCalendarHTML(months);
+    window.CoffeeRhythmCalendarRender.renderCalendarHTML(months, data.hours_note);
 })();
 </script>

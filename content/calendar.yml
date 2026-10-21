@@ -10,3 +10,5 @@ weekly_pattern:
 confirmed_until:
 
 exceptions: []
+
+hours_note: "営業時間 10:00〜17:00 (L.O. 16:30)"

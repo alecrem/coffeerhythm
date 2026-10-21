@@ -259,6 +259,22 @@ main > section { padding-block: clamp(3rem, 8vw, 5.5rem); }
   overflow-wrap: anywhere;
 }
 
+.calendar__hours-note {
+  margin-top: .85rem;
+  padding-top: .85rem;
+  border-top: 1px solid rgba(17, 71, 39, .15);
+  font-size: .8125rem;
+  color: var(--ink);
+}
+
+.calendar__hours-note p {
+  margin: 0 0 .4rem;
+}
+
+.calendar__hours-note p:last-child {
+  margin-bottom: 0;
+}
+
 .calendar__legend {
   margin: 1rem 0 0;
   font-size: .8125rem;
