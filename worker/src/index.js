@@ -27,14 +27,23 @@ async function handleAuth(request, env) {
   });
 }
 
-// トークンを渡す相手はこのサイトだけに限定する。
-const ALLOWED_ORIGIN = 'https://coffeerhythm.pages.dev';
+// トークンを渡す相手は本番ドメインと、このプロジェクトの Cloudflare Pages
+// プレビュードメイン（<hash>.coffeerhythm.pages.dev）だけに限定する。
+// hostname の完全一致・サフィックス一致で見るので、
+// 「coffeerhythm.pages.dev.evil.com」のようななりすましは通らない。
+const ALLOWED_ORIGIN_ROOT = 'coffeerhythm.pages.dev';
 
 function renderCallbackPage(payload) {
   return '<!doctype html><html><body><script>' +
     '(function () {' +
+    'function isAllowedOrigin(originString) {' +
+    'try {' +
+    'var hostname = new URL(originString).hostname;' +
+    'return hostname === ' + JSON.stringify(ALLOWED_ORIGIN_ROOT) + ' || hostname.endsWith(' + JSON.stringify('.' + ALLOWED_ORIGIN_ROOT) + ');' +
+    '} catch (err) { return false; }' +
+    '}' +
     'function receiveMessage(e) {' +
-    'if (e.origin !== ' + JSON.stringify(ALLOWED_ORIGIN) + ') { return; }' +
+    'if (!isAllowedOrigin(e.origin)) { return; }' +
     'window.opener.postMessage(' + JSON.stringify(payload) + ', e.origin);' +
     'window.removeEventListener("message", receiveMessage, false);' +
     '}' +

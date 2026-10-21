@@ -95,6 +95,14 @@ Google マップのボタンは例外で、Google Business Profile で確認済�
 決定を覆したり差し替えたりしたときに、その経緯を書く。現在の状態そのものは上の各節が
 説明しているので、ここには重複させない。
 
+### 2026-10-22: OAuth のトークンを渡す相手を本番＋プレビュードメインに広げる
+
+当初は `ALLOWED_ORIGIN` を本番ドメイン1つに固定していたが、Cloudflare Pages の
+プレビュー URL（`<hash>.coffeerhythm.pages.dev`）からマージ前に Decap CMS の
+ログインを確認できないのは不便だと判断し、`*.coffeerhythm.pages.dev` 全体を
+許可するよう変更した。hostname の完全一致・サフィックス一致で判定しており、
+`coffeerhythm.pages.dev.evil.com` のようななりすましドメインは通らない。
+
 ### 2026-10-22: カレンダーの文字コントラストを修正
 
 最終レビューで見つかった、`confirmed_until` 未設定時（＝全日が未確定）に文字が薄すぎて
@@ -119,9 +127,5 @@ Google Business Profile で店舗が確認された。従来の住所検索リ�
 
 - 独自ドメイン。取得したら `og:image` と `<link rel="canonical">` の URL も
   差し替える。どちらも絶対 URL で `coffeerhythm.pages.dev` を指しているため。
-  `worker/src/index.js` の `ALLOWED_ORIGIN`（OAuth のトークンを渡す相手を絞る値）も
+  `worker/src/index.js` の `ALLOWED_ORIGIN_ROOT`（OAuth のトークンを渡す相手を絞る値）も
   本番ドメインを指しているので、このときに一緒に更新すること。
-- Cloudflare Pages のプレビュー URL（PRごとに発行される `<hash>.coffeerhythm.pages.dev`）
-  からは Decap CMS のログインが完了しない。`ALLOWED_ORIGIN` が本番ドメインに固定されて
-  いるため。編集は常に本番の `/admin/` から行い、プレビュー URL は公開前の見た目を
-  確認するためだけに使う、という前提を崩さないこと。
