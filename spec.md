@@ -112,3 +112,9 @@ Google Business Profile で店舗が確認された。従来の住所検索リ�
 
 - 独自ドメイン。取得したら `og:image` と `<link rel="canonical">` の URL も
   差し替える。どちらも絶対 URL で `coffeerhythm.pages.dev` を指しているため。
+  `worker/src/index.js` の `ALLOWED_ORIGIN`（OAuth のトークンを渡す相手を絞る値）も
+  本番ドメインを指しているので、このときに一緒に更新すること。
+- Cloudflare Pages のプレビュー URL（PRごとに発行される `<hash>.coffeerhythm.pages.dev`）
+  からは Decap CMS のログインが完了しない。`ALLOWED_ORIGIN` が本番ドメインに固定されて
+  いるため。編集は常に本番の `/admin/` から行い、プレビュー URL は公開前の見た目を
+  確認するためだけに使う、という前提を崩さないこと。
