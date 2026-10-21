@@ -46,12 +46,12 @@ logo/               画像の生成に使うロゴの元データ
 差し替えたときだけ実行すればよい：
 
 ```sh
-magick logo/coffeerhythm-logo.png -resize 600x600 -strip public/assets/logo.png
-magick logo/coffeerhythm-logo.png -resize 64x64 -strip public/assets/favicon.png
+magick logo/coffeerhythm-logo.png -resize 600x600 -strip src/assets/logo.png
+magick logo/coffeerhythm-logo.png -resize 64x64 -strip src/assets/favicon.png
 magick logo/coffeerhythm-logo.png -resize 180x180 -background '#114727' -alpha remove -alpha off \
-  -strip public/assets/apple-touch-icon.png
+  -strip src/assets/apple-touch-icon.png
 magick -size 1200x630 xc:'#F4EAE0' \( logo/coffeerhythm-logo.png -resize 440x440 \) \
-  -gravity center -composite -strip -quality 88 public/assets/og.jpg
+  -gravity center -composite -strip -quality 88 src/assets/og.jpg
 ```
 
 apple-touch-icon だけ `-alpha remove -alpha off` で透過を落としている。iOS は透過部分を
@@ -60,7 +60,7 @@ apple-touch-icon だけ `-alpha remove -alpha off` で透過を落としてい�
 ## Cloudflare Pages の設定
 
 - **Framework preset**: `None`
-- **Build command**: `npx @11ty/eleventy`
+- **Build command**: `pnpm run build`
 - **Build output directory**: `public`
 
 ## OAuth Worker（Decap CMSのログイン用）
