@@ -31,7 +31,7 @@ collections:
               - { label: 日曜日, name: sunday, widget: select, options: [open, closed] }
           - label: この日付まで確定
             name: confirmed_until
-            widget: date
+            widget: datetime
             required: false
             format: 'YYYY-MM-DD'
             date_format: 'YYYY-MM-DD'
@@ -41,7 +41,7 @@ collections:
             widget: list
             required: false
             fields:
-              - { label: 日付, name: date, widget: date, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false }
+              - { label: 日付, name: date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false }
               - { label: 状態（空欄なら通常どおり）, name: status, widget: select, options: [open, closed], required: false }
               - { label: メモ（例：15時に閉店します）, name: note, widget: string, required: false }
 
