@@ -240,8 +240,8 @@ main > section { padding-block: clamp(3rem, 8vw, 5.5rem); }
 
 .calendar__day--closed .calendar__day-status { color: var(--ink); }
 
-/* 営業日は数字だけで足りるので、ラベルは読み上げ用に残して見た目からは外す。 */
-.calendar__day-status--open {
+/* 画面には出さず、スクリーンリーダーにだけ読み上げさせる。 */
+.sr-only {
   position: absolute;
   width: 1px;
   height: 1px;
