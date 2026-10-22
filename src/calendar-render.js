@@ -6,6 +6,15 @@
   var WEEKDAY_KEYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
   var STATUSES = ['open', 'closed'];
   var STATUS_LABELS = { open: '営業', closed: '休' };
+  var WEEKDAY_FULL_LABELS = {
+    monday: '月曜日',
+    tuesday: '火曜日',
+    wednesday: '水曜日',
+    thursday: '木曜日',
+    friday: '金曜日',
+    saturday: '土曜日',
+    sunday: '日曜日'
+  };
 
   function escapeHtml(value) {
     return String(value)
@@ -39,10 +48,14 @@
       ? '<span class="calendar__day-note">' + escapeHtml(day.note) + '</span>'
       : '';
     var dayNumberClass = 'calendar__day-number' + (day.weekday === 'sunday' ? ' calendar__day-number--sunday' : '');
+    var weekdayLabel = WEEKDAY_FULL_LABELS[day.weekday] || '';
+    // 営業日は数字だけで足りるので、ラベルは読み上げ用に残して見た目からは外す。
+    var statusClass = 'calendar__day-status calendar__day-status--' + status + (status === 'open' ? ' sr-only' : '');
 
     return '<li class="' + classes.join(' ') + '" data-date="' + escapeHtml(day.date) + '"' + title + '>' +
       '<span class="' + dayNumberClass + '">' + dayNumber + '</span>' +
-      '<span class="calendar__day-status calendar__day-status--' + status + '">' + statusLabel + '</span>' +
+      '<span class="sr-only">' + escapeHtml(weekdayLabel) + '</span>' +
+      '<span class="' + statusClass + '">' + statusLabel + '</span>' +
       note +
       '</li>';
   }

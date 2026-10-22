@@ -298,3 +298,16 @@ test('renderCalendarHTML: hours_noteが無ければ何も追加しない', () =>
   const html = renderCalendarHTML(months);
   assert.ok(!html.includes('calendar__hours-note'));
 });
+
+test('renderDay: 各日にスクリーンリーダー向けの曜日テキストを入れる', () => {
+  const html = renderDay(resolveDay(baseCalendar, '2026-10-01')); // 木曜日
+  assert.ok(html.includes('<span class="sr-only">木曜日</span>'));
+});
+
+test('renderDay: 営業中の「営業」ラベルは読み上げ用のみ、休業中の「休」は画面にも出す', () => {
+  const openDay = renderDay(resolveDay(baseCalendar, '2026-10-01')); // 営業
+  const closedDay = renderDay(resolveDay(baseCalendar, '2026-10-05')); // 休業（月曜）
+  assert.ok(openDay.includes('calendar__day-status calendar__day-status--open sr-only'));
+  assert.ok(closedDay.includes('calendar__day-status calendar__day-status--closed">'));
+  assert.ok(!closedDay.includes('calendar__day-status--closed sr-only'));
+});
