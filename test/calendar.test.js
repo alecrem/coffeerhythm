@@ -311,3 +311,10 @@ test('renderDay: 営業中の「営業」ラベルは読み上げ用のみ、休
   assert.ok(closedDay.includes('calendar__day-status calendar__day-status--closed">'));
   assert.ok(!closedDay.includes('calendar__day-status--closed sr-only'));
 });
+
+test('renderDay: 未確定の日はスクリーンリーダー向けに「未確定」と伝える', () => {
+  const provisionalDay = renderDay(resolveDay(baseCalendar, '2026-11-20')); // confirmed_untilより後
+  const confirmedDay = renderDay(resolveDay(baseCalendar, '2026-10-01')); // confirmed_untilより前
+  assert.ok(provisionalDay.includes('<span class="sr-only">未確定</span>'));
+  assert.ok(!confirmedDay.includes('未確定'));
+});

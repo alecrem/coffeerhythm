@@ -51,10 +51,13 @@
     var weekdayLabel = WEEKDAY_FULL_LABELS[day.weekday] || '';
     // 営業日は数字だけで足りるので、ラベルは読み上げ用に残して見た目からは外す。
     var statusClass = 'calendar__day-status calendar__day-status--' + status + (status === 'open' ? ' sr-only' : '');
+    // 見た目では点線ボーダーで伝える未確定を、読み上げでも伝える。
+    var provisionalLabel = day.provisional ? '<span class="sr-only">未確定</span>' : '';
 
     return '<li class="' + classes.join(' ') + '" data-date="' + escapeHtml(day.date) + '"' + title + '>' +
       '<span class="' + dayNumberClass + '">' + dayNumber + '</span>' +
       '<span class="sr-only">' + escapeHtml(weekdayLabel) + '</span>' +
+      provisionalLabel +
       '<span class="' + statusClass + '">' + statusLabel + '</span>' +
       note +
       '</li>';
