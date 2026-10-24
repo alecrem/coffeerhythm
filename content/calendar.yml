@@ -6,12 +6,18 @@ weekly_pattern:
   friday: open
   saturday: open
   sunday: open
-confirmed_until: 2026-10-31
+confirmed_until: 2026-11-11
 exceptions:
   - date: 2026-10-10
+    status: ''
     note: 10:00〜15:00
-  - date: 2026-10-17
+  - date: 2026-10-25
     status: closed
-  - date: 2026-10-24
+    note: ''
+  - date: 2026-11-07
     status: closed
+    note: ''
+  - date: 2026-11-05
+    status: open
+    note: ''
 hours_note: 営業時間 10:00〜17:00 (L.O. 16:30)
