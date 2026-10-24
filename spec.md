@@ -12,8 +12,8 @@
 
 ## 制約
 
-- **営業カレンダーとメニューは Decap CMS で編集できる。** Eleventy でビルドし、
-  カレンダーの判定ロジック（`src/calendar.js`）は本番ページと Decap のプレビューで
+- **営業カレンダーとメニューは Sveltia CMS で編集できる。** Eleventy でビルドし、
+  カレンダーの判定ロジック（`src/calendar.js`）は本番ページと Sveltia のプレビューで
   同じファイルを共有する。詳細は下の節を参照。
 - **無料でホスティングできる。** Cloudflare Pages。
 - **トラッキングを行うサードパーティのリソースをページに読み込まない。** 外部ホストの
@@ -31,7 +31,7 @@
 | Instagram | 最新のお知らせについての一文と、プロフィールへのボタン |
 | フッター | 店名と @coffeerhythm_itoshima |
 
-営業日は月ごとに変わるので Decap CMS から編集できるようにし、ページ上のカレンダーで
+営業日は月ごとに変わるので Sveltia CMS から編集できるようにし、ページ上のカレンダーで
 案内している。メニューもサイトに置いたが、内容が確定するまでは「準備中」のまま。
 電話番号と駐車場の情報は、確認が取れていないため引き続き記載していない。
 
@@ -86,7 +86,7 @@ Google マップのボタンは例外で、Google Business Profile で確認済�
 （`pnpm test`）で決定的にテストできる。「今日」の日付は常に引数として渡し、関数内で
 `Date.now()` を読まない。テストは `test/calendar.test.js` にある。
 
-それ以外（テンプレート、CSS、Decap CMS の設定、OAuth Worker）はロジックを持たない、
+それ以外（テンプレート、CSS、Sveltia CMS の設定、OAuth Worker）はロジックを持たない、
 または実際のGitHub/Cloudflareとの通信が前提のため、自動テストの対象にしていない。
 ビルド・目視・手動でのログイン確認で確かめる。
 
@@ -94,6 +94,19 @@ Google マップのボタンは例外で、Google Business Profile で確認済�
 
 決定を覆したり差し替えたりしたときに、その経緯を書く。現在の状態そのものは上の各節が
 説明しているので、ここには重複させない。
+
+### 2026-10-24: 管理画面を Decap CMS から Sveltia CMS に切り替え
+
+Decap CMS の管理画面はモバイルでの表示にほぼ対応しておらず（長年未解決の既知の制限、
+decaporg/decap-cms#441 など）、issue #12 で Sveltia CMS に乗り換えた。`config.yml` は
+そのまま流用でき、`admin/index.html` の script タグを差し替えるだけで動いた。GitHub
+ログイン（既存の OAuth Worker 経由）、カレンダーのカスタムプレビューテンプレート
+（`admin/preview-templates/calendar.js`、Decap の `createClass`/`h`/Immutable.js API を
+使用）、モバイル表示の改善を Cloudflare Pages のプレビュー環境で確認済み。
+
+保存時に生成される YAML は Decap と異なり、空の省略可能フィールドも明示的に書き出す
+（例：`status: ''`）。`resolveDay`（`src/calendar.js`）は `if (exception.status)` のように
+真偽値判定しているため、空文字と未設定は同じ扱いになり実害はない。
 
 ### 2026-10-22: 営業時間の文章を今月のカレンダーの下に追加
 
