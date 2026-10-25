@@ -2,7 +2,7 @@
 
 福岡県糸島市のコーヒー店「珈琲リズム」の1ページ構成のウェブサイト。
 
-Eleventy でビルドする静的サイト。営業カレンダーとメニューは Decap CMS で編集できる。
+Eleventy でビルドする静的サイト。営業カレンダーとメニューは Sveltia CMS で編集できる。
 
 ## ローカルで見る
 
@@ -16,9 +16,9 @@ pnpm run serve
 ## 構成
 
 ```
-content/            calendar.yml, menu.md（Decap CMSが編集する対象）
+content/            calendar.yml, menu.md（Sveltia CMSが編集する対象）
 src/                Eleventyの入力（テンプレート、calendar.js、CSS、画像）
-admin/              Decap CMS（config.yml, index.html, preview-templates/）
+admin/              Sveltia CMS（config.yml, index.html, preview-templates/）
 worker/             OAuthプロキシ（Cloudflare Worker、このrepo専用、別デプロイ）
 public/             Eleventyの出力。生成物のためgit管理外
 test/               calendar.jsのテスト（node --test）
@@ -27,7 +27,7 @@ logo/               画像の生成に使うロゴの元データ
 
 ## お店の情報を更新する
 
-技術者でない場合は `/admin/` の管理画面（Decap CMS）から、営業カレンダーとメニューを
+技術者でない場合は `/admin/` の管理画面（Sveltia CMS）から、営業カレンダーとメニューを
 編集できる。保存するとブランチとPRが作られ、Cloudflare Pagesのプレビュー URL で
 確認した上で「公開」すると main にマージされる。
 
@@ -63,9 +63,9 @@ apple-touch-icon だけ `-alpha remove -alpha off` で透過を落としてい�
 - **Build command**: `pnpm run build`
 - **Build output directory**: `public`
 
-## OAuth Worker（Decap CMSのログイン用）
+## OAuth Worker（Sveltia CMSのログイン用）
 
-`worker/` は Decap CMS が GitHub にログインするための OAuth プロキシ。Cloudflare
+`worker/` は Sveltia CMS が GitHub にログインするための OAuth プロキシ。Cloudflare
 Pages とは別に `cd worker && npx wrangler deploy` でデプロイする。`GITHUB_OAUTH_CLIENT_ID`
 と `GITHUB_OAUTH_CLIENT_SECRET` は `npx wrangler secret put` で設定し、repo には
 含めない。
